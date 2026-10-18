@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHADOW DICE</title>
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;padding:20px 12px;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(circle at top,#263b5c,#090d18 75%);
+  color:#fff;font-family:Arial,sans-serif
+}
+.card{
+  width:100%;max-width:460px;text-align:center;
+  padding:25px 16px;border:1px solid #536b91;
+  border-radius:20px;background:#17253bd9;
+  box-shadow:0 0 35px #287bff20
+}
+.logo{font-size:42px;margin-bottom:8px}
+h1{font-size:30px;letter-spacing:3px;margin:5px 0;color:#e4edff}
+.subtitle{color:#a9bddb;font-size:12px;letter-spacing:2px}
+hr{border:0;border-top:1px solid #405573;margin:22px 0}
+.controls{display:flex;gap:8px}
+select{
+  width:50%;min-width:0;padding:13px 8px;
+  border-radius:8px;border:1px solid #607a9e;
+  background:#0d1728;color:white;font-size:14px
+}
+#dice{
+  display:flex;flex-wrap:wrap;justify-content:center;
+  gap:10px;margin:30px 0;min-height:64px
+}
+.die{
+  width:59px;height:59px;border:4px solid #fff;
+  border-radius:13px;display:grid;place-items:center;
+  font-size:27px;color:white;
+  box-shadow:0 4px 12px #0006;
+  animation:appear .2s ease-out
+}
+@keyframes appear{
+  from{transform:scale(.65) rotate(-12deg);opacity:.4}
+  to{transform:scale(1) rotate(0);opacity:1}
+}
+button{
+  width:100%;padding:16px;border:0;border-radius:9px;
+  background:linear-gradient(90deg,#2588f5,#56baff);
+  color:#fff;font-size:17px;font-weight:bold;
+  letter-spacing:1px;cursor:pointer
+}
+button:active{transform:scale(.98)}
+#result{color:#d7e5fa;font-size:14px;min-height:20px;margin-top:18px}
+.footer{font-size:11px;color:#8298b9;margin-top:25px}
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="logo">🎲</div>
+  <h1>SHADOW DICE</h1>
+  <p class="subtitle">COLOR GAME & LIGHT OR DARK</p>
+  <hr>
+  <div class="controls">
+    <select id="count" aria-label="Dice count">
+      <option value="2">2 DICE</option>
+      <option value="4" selected>4 DICE</option>
+      <option value="6">6 DICE</option>
+    </select>
+    <select id="mode" aria-label="Dice mode">
+      <option value="color">COLOR DICE</option>
+      <option value="light">LIGHT</option>
+      <option value="dark">DARK</option>
+    </select>
+  </div>
+  <div id="dice"></div>
+  <button id="roll">ROLL AGAIN!</button>
+  <p id="result">Ready to roll?</p>
+  <div class="footer">SHADOW DICE • FAN-MADE GAME</div>
+</main>
+<script>
+const palette=[
+  {name:"GREEN",color:"#13b83f"},
+  {name:"RED",color:"#ed2638"},
+  {name:"PURPLE",color:"#9515a9"},
+  {name:"BLUE",color:"#218cf4"},
+  {name:"YELLOW",color:"#e8ae19"}
+];
+
+function roll(){
+  const count=Number(document.getElementById("count").value);
+  const mode=document.getElementById("mode").value;
+  const box=document.getElementById("dice");
+  const result=document.getElementById("result");
+  box.innerHTML="";
+  let rolled=[];
+
+  for(let i=0;i<count;i++){
+    const item=palette[Math.floor(Math.random()*palette.length)];
+    rolled.push(item);
+    const die=document.createElement("div");
+    die.className="die";
+    die.style.background=item.color;
+    die.textContent="●";
+    die.setAttribute("aria-label",item.name);
+    box.appendChild(die);
+  }
+
+  if(mode==="color"){
+    result.textContent="COLORS: "+rolled.map(x=>x.name).join(" • ");
+  }else if(mode==="light"){
+    const total=rolled.filter(x=>
+      x.name==="GREEN"||x.name==="YELLOW"
+    ).length;
+    result.textContent="LIGHT: "+total+" / "+count;
+  }else{
+    const total=rolled.filter(x=>
+      x.name==="RED"||x.name==="PURPLE"||x.name==="BLUE"
+    ).length;
+    result.textContent="DARK: "+total+" / "+count;
+  }
+}
+
+document.getElementById("roll").addEventListener("click",roll);
+document.getElementById("count").addEventListener("change",roll);
+document.getElementById("mode").addEventListener("change",roll);
+roll();
+</script>
+</body>
+  </html>
+  
